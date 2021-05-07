@@ -30,7 +30,6 @@ namespace API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-
       // Configure the DB connection for the whole app here
       services.AddDbContext<DataContext>(options =>
       {
@@ -42,6 +41,8 @@ namespace API
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
       });
+      // Allow CORS requests
+      services.AddCors();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +58,9 @@ namespace API
       app.UseHttpsRedirection();
 
       app.UseRouting();
+
+      // x is the policy that we are defining
+      app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
       app.UseAuthorization();
 
