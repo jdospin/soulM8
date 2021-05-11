@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
+using API.Extensions;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,13 +36,7 @@ namespace API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddScoped<ITokenService, TokenService>();
-      // Configure the DB connection for the whole app here
-      services.AddDbContext<DataContext>(options =>
-      {
-        // provide the DB connection string
-        options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-      });
+      services.AddApplicationServices(_config);
       services.AddControllers();
       services.AddSwaggerGen(c =>
       {
@@ -49,14 +44,7 @@ namespace API
       });
       // Allow CORS requests
       services.AddCors();
-      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-        options.TokenValidationParameters = new TokenValidationParameters {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"])),
-          ValidateIssuer = false, // issuer is the API server
-          ValidateAudience = false, // audience is the Angular app (client)
-        };
-      });
+      services.AddIdentityServices(_config);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
