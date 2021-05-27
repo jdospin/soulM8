@@ -14,7 +14,7 @@ namespace API.Middleware {
     private readonly IHostEnvironment _env;
 
     public ExceptionMiddleware (
-      RequestDelegate next,
+      RequestDelegate next, // this is what's coming up next in the middleware pipeline
       ILogger<ExceptionMiddleware> logger,
       IHostEnvironment env) {
       _next = next;
